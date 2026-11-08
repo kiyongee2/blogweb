@@ -10,7 +10,7 @@ spring:
   jpa:
     defer-datasource-initialization: true  # 테이블 생성 후 data.sql 실행
     hibernate:
-      ddl-auto: update                     # 테이블 유지, 바뀐 컬럼만 반영 (데이터 유지)
+      ddl-auto: update    # create: 초기화, update: 테이블 유지, 바뀐 컬럼만 반영 (데이터 유지)
     properties:
       hibernate:
         jdbc:
@@ -58,6 +58,10 @@ spring:
 
   thymeleaf:
     cache: false                           # 템플릿 수정이 바로 반영
+
+logging:
+  level:
+    org.springframework.security: DEBUG    # 시큐리티가 요청을 허용/차단한 이유를 콘솔에 출력 (확인 후 삭제)
 
 ---
 # =====================================================================

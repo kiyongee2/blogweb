@@ -39,3 +39,6 @@ out/
 ### 업로드 이미지 · 비밀 정보 ###
 uploads/
 .env
+
+# 시큐리티 작업 전 백업 (확인 후 삭제)
+_backup_security/

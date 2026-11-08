@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Blog Post</title>
@@ -38,7 +39,8 @@
                 <p class="fs-5 lh-lg mb-0" style="white-space: pre-line;" th:text="${article.content}"></p>
             </div>
 
-            <div class="card-footer d-flex justify-content-end gap-2">
+            <!-- 수정 · 삭제 버튼은 로그인한 회원에게만 -->
+            <div class="card-footer d-flex justify-content-end gap-2" sec:authorize="isAuthenticated()">
                 <a th:href="@{/new-article(id=${article.id})}" class="btn btn-success btn-sm">수정</a>
                 <button type="button" id="delete-btn" class="btn btn-danger btn-sm">삭제</button>
             </div>

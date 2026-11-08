@@ -21,6 +21,30 @@ function readForm() {
     };
 }
 
+// 등록 기능
+const createButton = document.getElementById('create-btn');
+
+if (createButton) {
+    createButton.addEventListener('click', event => {
+        const body = readForm();
+        if (!body) return;
+
+        fetch('/api/articles', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+        .then(checkResponse)
+        .then(() => {
+            alert('등록 완료되었습니다.');
+            location.replace('/articles');
+        })
+        .catch(error => alert('등록 실패: ' + error.message));
+    });
+}
+
 // 삭제 기능
 const deleteButton = document.getElementById('delete-btn');
 
@@ -65,31 +89,7 @@ if (modifyButton) {
     });
 }
 
-// 등록 기능
-const createButton = document.getElementById('create-btn');
-
-if (createButton) {
-    createButton.addEventListener('click', event => {
-        const body = readForm();
-        if (!body) return;
-
-        fetch('/api/articles', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        })
-        .then(checkResponse)
-        .then(() => {
-            alert('등록 완료되었습니다.');
-            location.replace('/articles');
-        })
-        .catch(error => alert('등록 실패: ' + error.message));
-    });
-}
-
-// 이미지 업로드
+// 파일 선택시 업로드 + 미리보기
 const imageUpload = document.getElementById('image-upload');
 if (imageUpload) {
     imageUpload.addEventListener('change', (event) => {
@@ -113,4 +113,29 @@ if (imageUpload) {
             })
             .catch(e => alert(e.message));
     });
+}
+// 미리보기 표시 — 업로드한 이미지 경로를 <img>에 넣고 미리보기 영역을 보여 준다
+function displayImagePreview(imageUrl) {
+    const preview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    if (!preview || !previewImg) return;
+    previewImg.src = imageUrl;
+    preview.style.display = 'block';
+}
+
+// 이미지 제거 — 경로를 비우고 미리보기를 숨긴다 (저장/수정 시 imageUrl = null)
+const removeImageButton = document.getElementById('remove-image-btn');
+if (removeImageButton) {
+    removeImageButton.addEventListener('click', () => {
+        document.getElementById('image-url').value = '';
+        document.getElementById('image-upload').value = '';
+        document.getElementById('preview-img').src = '';
+        document.getElementById('image-preview').style.display = 'none';
+    });
+}
+
+// 수정 화면 — 이미 저장된 이미지가 있으면 처음부터 미리보기 표시
+const savedImageUrl = document.getElementById('image-url')?.value;
+if (savedImageUrl) {
+    displayImagePreview(savedImageUrl);
 }
