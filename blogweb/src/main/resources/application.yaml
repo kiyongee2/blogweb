@@ -1,0 +1,80 @@
+# =====================================================================
+# 공통 설정 — 개발(dev) · 운영(prod) 모두 적용
+# =====================================================================
+spring:
+  application:
+    name: blogweb
+  profiles:
+    default: dev                           # 프로파일을 지정하지 않으면 dev (IntelliJ 실행)
+
+  jpa:
+    defer-datasource-initialization: true  # 테이블 생성 후 data.sql 실행
+    hibernate:
+      ddl-auto: update                     # 테이블 유지, 바뀐 컬럼만 반영 (데이터 유지)
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul            # created_at 등을 한국 시간으로 저장
+    open-in-view: false
+
+  sql:
+    init:
+      mode: always                         # 시작할 때 data.sql 실행 (중복 방지 SQL)
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: ${PORT:8080}                       # Render는 PORT를 넘겨 줌, 로컬은 8080
+
+---
+# =====================================================================
+# 개발(dev) — 로컬 PostgreSQL, SQL 출력, DevTools
+# =====================================================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springdb
+    username: javauser                     # pgAdmin(psql)에서 만든 계정
+    password: ${DB_PASSWORD}               # IntelliJ 실행 설정 → Environment variables
+
+  jpa:
+    show-sql: true                         # 실행 SQL 출력(학습용)
+    properties:
+      hibernate:
+        format_sql: true
+
+  devtools:
+    restart:
+      enabled: true                        # 코드 변경 시 서버 자동 재시작
+      poll-interval: 2s                    # 변경 확인 간격
+      quiet-period: 1s                     # 변경이 멈춘 뒤 재시작까지 대기
+      additional-exclude: uploads/**       # 업로드 폴더 변경은 재시작 안 함
+    livereload:
+      enabled: true                        # 브라우저 자동 새로고침 (포트 35729)
+
+  thymeleaf:
+    cache: false                           # 템플릿 수정이 바로 반영
+
+---
+# =====================================================================
+# 운영(prod) — Render 배포. 접속 정보는 모두 환경변수로
+# =====================================================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${DB_URL}                   # jdbc:postgresql://호스트:5432/springdb
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: false                  # 운영에서는 SQL 출력 끔
+
+  thymeleaf:
+    cache: true                            # 템플릿 캐시 사용 (성능)
