@@ -88,3 +88,29 @@ if (createButton) {
         .catch(error => alert('등록 실패: ' + error.message));
     });
 }
+
+// 이미지 업로드
+const imageUpload = document.getElementById('image-upload');
+if (imageUpload) {
+    imageUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            alert('이미지 파일만 업로드 가능합니다.');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', file);           // @RequestParam("file") 과 이름 일치
+
+        fetch('/api/upload', { method: 'POST', body: formData })
+            .then(response => {
+                if (!response.ok) throw new Error('업로드 실패');
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('image-url').value = data.imageUrl;
+                displayImagePreview(data.imageUrl);
+            })
+            .catch(e => alert(e.message));
+    });
+}

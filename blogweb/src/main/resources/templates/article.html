@@ -11,36 +11,44 @@
         <h1 class="mb-3">My Blog</h1>
         <h4 class="mb-3">블로그에 오신 것을 환영합니다.</h4>
     </div>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-lg-8">
-                <article>
-                    <!-- 블로그 글 id 추가 -->
-                    <input type="hidden" id="article-id" th:value="${article.id}">
-                    <header class="mb-4">
-                        <h1 class="fw-bolder mb-1" th:text="${article.title}"></h1>
-                        <div class="text-muted fst-italic mb-2"
-                             th:text="|Posted on ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}|"></div>
-                    </header>
-                    <section class="mb-4" th:if="${article.imageUrl != null and article.imageUrl != ''}">
-                        <img th:src="${article.imageUrl}" alt="게시글 이미지" class="img-fluid"
-                             style="max-width: 100%; height: auto;">
-                    </section>
-                    <section class="mb-5">
-                        <p class="fs-5 mb-4" th:text="${article.content}"></p>
-                    </section>
-                    <a th:href="@{/new-article(id=${article.id})}" class="btn btn-success btn-sm">수정</a>
-                    <button id="delete-btn"
-                            class="btn btn-secondary btn-sm">삭제</button>
-                    <a th:href="@{/articles}" class="btn btn-primary btn-sm">목록</a>
-                </article>
+    <div class="container mb-5" style="max-width: 900px;">   <!-- 너무 넓지 않게 폭 제한 -->
+        <!-- 목록 화면의 "글 등록" 버튼과 같은 자리 -->
+        <a th:href="@{/articles}" class="btn btn-secondary btn-sm mb-3">← 글목록</a>
+
+        <!-- 목록 · 등록 화면과 같은 카드 모양 -->
+        <article class="card">
+            <!-- 블로그 글 id 추가 -->
+            <input type="hidden" id="article-id" th:value="${article.id}">
+
+            <div class="card-header d-flex justify-content-between">
+                <span th:text="|#${article.id}|"></span>
+                <span class="text-muted"
+                      th:text="|Posted on ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}|"></span>
             </div>
-        </div>
+
+            <div class="card-body p-4">
+                <h2 class="fw-bold mb-4" th:text="${article.title}"></h2>
+
+                <div class="mb-4 text-center" th:if="${article.imageUrl != null and article.imageUrl != ''}">
+                    <img th:src="${article.imageUrl}" alt="게시글 이미지" class="img-fluid rounded"
+                         style="max-height: 400px;">
+                </div>
+
+                <!-- pre-line: 입력한 줄바꿈을 그대로 보여 줌 -->
+                <p class="fs-5 lh-lg mb-0" style="white-space: pre-line;" th:text="${article.content}"></p>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a th:href="@{/new-article(id=${article.id})}" class="btn btn-success btn-sm">수정</a>
+                <button type="button" id="delete-btn" class="btn btn-danger btn-sm">삭제</button>
+            </div>
+        </article>
     </div>
 
     <!-- Bootstrap 5.1.3 JS (Popper 포함) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- 삭제 버튼 동작 -->
     <script src="/js/article.js"></script>
 </body>
 </html>
